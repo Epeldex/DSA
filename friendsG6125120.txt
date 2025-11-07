@@ -1,0 +1,16 @@
+friend1,friend2
+Lia07,Mateo84
+Lia07,Nora19
+Lia07,Omar42
+Lia07,Iris33
+Lia07,Pau11
+Mateo84,Nora19
+Mateo84,Omar42
+Mateo84,Iris33
+Mateo84,Pau11
+Nora19,Omar42
+Nora19,Iris33
+Nora19,Pau11
+Omar42,Iris33
+Omar42,Pau11
+Iris33,Pau11

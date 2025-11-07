@@ -1,0 +1,7 @@
+idperson,name,lastname,birthdate,gender,birthplace,home,studiedat,workplaces,films,groupcode
+Lia07,Lia,Martinez,5-3-1998,female,Bilbao,Bilbao,UPV;Deusto,Bilbao;Madrid,Amelie;Arrival,G6125120
+Mateo84,Mateo,Lopez,12-11-1995,male,Madrid,Barcelona,Complutense;UPC,Barcelona;Berlin,Inception;Interstellar,G6125120
+Nora19,Nora,Ibanez,23-7-1997,female,Valencia,Valencia,UV;PolitecnicaValencia,Valencia;Lisboa,LaLaLand;Gravity,G6125120
+Omar42,Omar,Hassan,14-2-1994,male,Sevilla,Sevilla,US;Granada,Sevilla;Malaga,Gladiator;TheMatrix,G6125120
+Iris33,Iris,Gomez,30-9-1996,female,Donostia,Donostia,Deusto;SantoTomas,Donostia;Paris,Casablanca;ET,G6125120
+Pau11,Pau,Soler,1-6-1995,male,Barcelona,Girona,UB;UAB,Barcelona;Girona,ThePrestige;Memento,G6125120
