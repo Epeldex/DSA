@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -19,7 +18,7 @@ public class FileHandler {
 	public FileHandler() {
 	}
 
-	public void loadPeople(Map<String, Person> people) {
+	public void loadPeople(List<Person> people) {
 		Scanner input;
 		String rawPerson;
 
@@ -50,7 +49,7 @@ public class FileHandler {
 					person.setFilms(Arrays.asList(films));
 
 					if (!personExists(people, person)) {
-						people.put(person.getIdperson(), person);
+						people.add(person);
 					}
 
 				}
@@ -65,8 +64,7 @@ public class FileHandler {
 
 	}
 
-	public List<Friend> loadFriendships(Map<String, Person> people) {
-		List<Friend> friends = new ArrayList<>();
+	public void loadFriendships(List<Friend> friends, List<Person> people) {
 		List<String> inputList = new ArrayList<>();
 
 		if (selectedPeopleFiles.isEmpty()) {
@@ -96,7 +94,7 @@ public class FileHandler {
 						continue;
 					String a = parts[0].trim();
 					String b = parts[1].trim();
-					for (Person p : people.values()) {
+					for (Person p : people) {
 						if (!allIds.contains(a) && p.getIdperson().equals(a)) {
 							{
 								allIds.add(a);
@@ -117,7 +115,7 @@ public class FileHandler {
 							continue;
 						String a = parts[0].trim();
 						String b = parts[1].trim();
-						for (Person p : people.values()) {
+						for (Person p : people) {
 							if (id.equals(a) && !friendsOfId.contains(b) && p.getIdperson().equals(b)) {
 								friendsOfId.add(b);
 							} else if (id.equals(b) && !friendsOfId.contains(a) && p.getIdperson().equals(a)) {
@@ -134,7 +132,6 @@ public class FileHandler {
 
 		}
 
-		return friends;
 	}
 
 	public List<File> selectFiles(String restriction) {
@@ -182,34 +179,6 @@ public class FileHandler {
 		return fileList;
 	}
 
-	private boolean personExists(Map<String, Person> people, Person person) {
-		return people.containsValue(person);
-	}
-	
-	public List<String> loadResidentialIds() {
-	    List<String> ids = new ArrayList<>();
-
-	    File residentialFile = new File("residential.txt");
-
-	    if (!residentialFile.exists()) {
-	        System.out.println("File 'residential.txt' not found in the current directory.");
-	        return ids;
-	    }
-
-	    try (Scanner input = new Scanner(residentialFile)) {
-	        while (input.hasNextLine()) {
-	            String line = input.nextLine().trim();
-	            if (!line.isEmpty()) {
-	                ids.add(line);
-	            }
-	        }
-	    } catch (Exception e) {
-	        System.err.println("Error reading 'residential.txt': " + e.toString());
-	    }
-
-	    return ids;
-	}
-
 	private boolean personExists(List<Person> people, Person person) {
 		for (Person p: people) {
 			if (person.getIdperson().equalsIgnoreCase(p.getIdperson()))
@@ -217,4 +186,22 @@ public class FileHandler {
 		}
 		return false;
 	}
+	/*
+	 * private int[] filesSelected() throws Exception { int[] choices = new
+	 * int[remainingFiles.size()]; Scanner scanner = new Scanner(System.in); int
+	 * choice = -1;
+	 * 
+	 * while (choice == -1 || choice <= remainingFiles.size()) { int i = 0; if
+	 * (remainingFiles.size() > 0) { System.out.println("People files found:"); int
+	 * j = 0; for (File file : remainingFiles) { System.out.println(j + 1 + ") " +
+	 * file.getName()); j++; } try { System.out.println("Select: "); choice =
+	 * scanner.nextInt(); } catch (InputMismatchException e) {
+	 * System.out.println("Write a valid character"); choice = -1; } for (int c :
+	 * choices) { if (c == choice) { System.out.println("File already chosen");
+	 * choice = -1; } } if (choice != -1) { choices[i] = choice; } i++; } else {
+	 * System.out.println("No people files found"); } }
+	 * 
+	 * return choices; }
+	 */
+
 }

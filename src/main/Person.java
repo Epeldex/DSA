@@ -1,11 +1,8 @@
 package main;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class Person implements Comparable<Person> {
-
+public class Person {
 	private String idperson;
 	private String name;
 	private String lastname;
@@ -17,8 +14,6 @@ public class Person implements Comparable<Person> {
 	private List<String> workplaces;
 	private List<String> films;
 	private String groupcode;
-	private Set<String> friends = new HashSet<>();
-
 
 	public Person(String idperson) {
 		this.idperson = idperson;
@@ -118,26 +113,5 @@ public class Person implements Comparable<Person> {
 				+ ", gender=" + gender + ", birthplace=" + birthplace + ", home=" + home + ", studiedAt=" + studiedAt
 				+ ", workplaces=" + workplaces + ", films=" + films + ", groupcode=" + groupcode + "]";
 	}
-
-	public Set<String> getFriends() {
-		return friends;
-	}
-
-	public void setFriends(Set<String> friends) {
-		this.friends = friends;
-	}
-
-    @Override
-    public int compareTo(Person other) {
-        int c;
-
-        c = this.birthplace.compareToIgnoreCase(other.birthplace);
-        if (c != 0) return c;
-
-        c = this.lastname.compareToIgnoreCase(other.lastname);
-        if (c != 0) return c;
-
-        return this.name.compareToIgnoreCase(other.name);
-    }
 
 }
