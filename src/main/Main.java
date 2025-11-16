@@ -37,12 +37,16 @@ public class Main {
 						+ "6.  Retrieve all the people that live in a certain city \n"
 						+ "7.  Print out all the people born between 2 dates \n"
 						+ "8.  People whose birthplace matches hometowns in 'residential.txt' \n" + "14. Log out");
-				userChoice = consoleInput.nextInt();
-				switch (userChoice) {
-				case 1:
-					new FileHandler().loadPeople(people);
-					break;
-				case 2:
+		people = new ArrayList<Person>();
+		friends = new ArrayList<Friend>();
+
+		int userChoice = -1;
+
+		System.out.println("1.  Load 'people' into the network \n" + "2.  Load 'relationships' \n"
+				+ "3.  Print out people \n" + "4.  Print out friendships \n" + "6. Print people from a specific Country\n" + "14. Log out");
+
+		try {
+			while ((userChoice >= 1 && userChoice <= 15) || userChoice == -1) {
 					List<Friend> friends = new FileHandler().loadFriendships(people);
 					loadFriendsForEachPerson(friends);
 					break;
@@ -54,12 +58,13 @@ public class Main {
 					break;
 				case 5:
 					printPersonsFriends();
-
+					break;
 				case 6:
-					System.out.println("WIP");
+					printPeopleCountry();
 					break;
 				case 7:
 					printPeopleBetweenDates();
+					break;
 				case 8:
 					printPeopleMatchingResidentialHometowns();
 					break;
@@ -270,11 +275,43 @@ public class Main {
 		try {
 			for (Person a : people.values()) {
 				System.out.println(a.getIdperson() + ": " + a.getFriends().toString());
+
 			}
 
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
 	}
+	private static void printPeopleCountry() {
+		Scanner consoleLine = new Scanner(System.in);
+		System.out.println("Which country do you want to show people from?");
+		String answer = consoleLine.nextLine().trim();
 
+		if (answer.isEmpty()) {
+			System.out.println("No country entered.");
+			consoleLine.close();
+			return;
+		}
+
+		try {
+			boolean found = false;
+
+			for (Person p : people) {
+				if (answer.equalsIgnoreCase(p.getHome())) {
+					System.out.println(p.getIdperson() + " " + p.getLastname());
+					found = true;
+				}
+			}
+
+			if (!found) {
+				System.out.println("No people found from " + answer);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			consoleLine.close();
+		}
+
+	}
 }

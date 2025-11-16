@@ -19,6 +19,7 @@ public class Person implements Comparable<Person> {
 	private String groupcode;
 	private Set<String> friends = new HashSet<>();
 
+
 	public Person(String idperson) {
 		this.idperson = idperson;
 	}
@@ -138,6 +139,5 @@ public class Person implements Comparable<Person> {
 
         return this.name.compareToIgnoreCase(other.name);
     }
-
 
 }

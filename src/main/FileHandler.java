@@ -133,6 +133,7 @@ public class FileHandler {
 			}
 
 		}
+
 		return friends;
 	}
 
@@ -209,23 +210,11 @@ public class FileHandler {
 	    return ids;
 	}
 
-	
-	/*
-	 * private int[] filesSelected() throws Exception { int[] choices = new
-	 * int[remainingFiles.size()]; Scanner scanner = new Scanner(System.in); int
-	 * choice = -1;
-	 * 
-	 * while (choice == -1 || choice <= remainingFiles.size()) { int i = 0; if
-	 * (remainingFiles.size() > 0) { System.out.println("People files found:"); int
-	 * j = 0; for (File file : remainingFiles) { System.out.println(j + 1 + ") " +
-	 * file.getName()); j++; } try { System.out.println("Select: "); choice =
-	 * scanner.nextInt(); } catch (InputMismatchException e) {
-	 * System.out.println("Write a valid character"); choice = -1; } for (int c :
-	 * choices) { if (c == choice) { System.out.println("File already chosen");
-	 * choice = -1; } } if (choice != -1) { choices[i] = choice; } i++; } else {
-	 * System.out.println("No people files found"); } }
-	 * 
-	 * return choices; }
-	 */
-
+	private boolean personExists(List<Person> people, Person person) {
+		for (Person p: people) {
+			if (person.getIdperson().equalsIgnoreCase(p.getIdperson()))
+				return true;
+		}
+		return false;
+	}
 }
