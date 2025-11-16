@@ -5,3 +5,13 @@ Nora19,Nora,Ibanez,23-7-1997,female,Valencia,Valencia,UV;PolitecnicaValencia,Val
 Omar42,Omar,Hassan,14-2-1994,male,Sevilla,Sevilla,US;Granada,Sevilla;Malaga,Gladiator;TheMatrix,G6125120
 Iris33,Iris,Gomez,30-9-1996,female,Donostia,Donostia,Deusto;SantoTomas,Donostia;Paris,Casablanca;ET,G6125120
 Pau11,Pau,Soler,1-6-1995,male,Barcelona,Girona,UB;UAB,Barcelona;Girona,ThePrestige;Memento,G6125120
+Ane21,Ane,Arrieta,10-1-1996,female,Bilbao,Donostia,UPV,Donostia;Bilbao,Whiplash;Moonlight,G6125120
+Joel30,Joel,Ruiz,8-4-1994,male,Girona,Girona,UdG,Girona;Barcelona,Drive;Whiplash,G6125120
+Clara55,Clara,Santos,2-2-1995,female,Barcelona,Valencia,UB,Barcelona;Valencia,InsideOut;Coco,G6125120
+Bruno60,Bruno,Navarro,19-9-1993,male,Valencia,Madrid,UV,Madrid;Valencia,MadMax;Sicario,G6125120
+Marta70,Marta,Diaz,7-7-1994,female,Sevilla,Bilbao,US;UPV,Bilbao;Sevilla,Arrival;Her,G6125120
+Gael90,Gael,Martin,30-3-1992,male,Donostia,Barcelona,Deusto,Barcelona;Donostia,Gravity;Looper,G6125120
+Iker50,Iker,Gallastegi,11-11-1996,male,Bilbao,Girona,UPV,Girona;Bilbao,Interstellar;Tenet,G6125120
+Sara15,Sara,Lopez,5-5-1998,female,Madrid,Sevilla,Complutense,Sevilla;Madrid,LaLaLand;Soul,G6125120
+Eva28,Eva,Puig,21-1-1995,female,Girona,Valencia,UdG,Valencia;Girona,Amelie;Roma,G6125120
+Nil99,Nil,Ferrer,9-9-1993,male,Barcelona,Donostia,UB,Donostia;Barcelona,Inception;Memento,G6125120
