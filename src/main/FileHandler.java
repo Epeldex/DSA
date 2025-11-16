@@ -9,7 +9,6 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
-//Buenas
 
 public class FileHandler {
 
