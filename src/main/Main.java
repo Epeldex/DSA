@@ -36,10 +36,10 @@ public class Main {
 				System.out.println("1.  Load 'people' into the network \n" + "2.  Load 'relationships' \n"
 						+ "3.  Print out people \n" + "4.  Print out friendships \n"
 						+ "5.  Print friends of a certain person \n"
-						+ "6.  Retrieve all the people that live in a certain city \n"
+						+ "6.  Retrieve all the people that live in a certain country \n"
 						+ "7.  Print out all the people born between 2 dates \n"
-						+ "8.  People whose birthplace matches hometowns in 'residential.txt' \n" 
-						+ "9.  Create groups with the same favorite movies' \n"+ "14. Log out");
+						+ "8.  People whose birthplace matches hometowns in 'residential.txt' \n"
+						+ "9.  Create groups with the same favorite movies' \n" + "14. Log out");
 				userChoice = consoleInput.nextInt();
 				switch (userChoice) {
 				case 1:
@@ -81,6 +81,7 @@ public class Main {
 
 		} catch (Exception e) {
 			System.out.println("Something went wrong");
+			e.printStackTrace();
 		} finally {
 			consoleInput.close();
 			System.out.println("Goodbye :)");
@@ -247,7 +248,39 @@ public class Main {
 	}
 
 	private static void printPersonsFriends() {
-		// TODO Auto-generated method stub
+		try {
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("Introduce the surname of the person to find: ");
+			String surname = scanner.nextLine();
+
+			List<Person> matches = new ArrayList<>();
+
+			for (Person p : people.values()) {
+				if (p.getLastname().equalsIgnoreCase(surname)) {
+					matches.add(p);
+				}
+			}
+			if (matches.isEmpty()) {
+				System.out.println("No people found with lastname: " + surname);
+				return;
+			}
+			for (Person person : matches) {
+				System.out.println("Person: ID = " + person.getIdperson() + ", Lastname = " + person.getLastname());
+				Set<String> friends = person.getFriends();
+
+				if (friends == null || friends.isEmpty()) {
+					System.out.println("    No friends found.");
+					continue;
+				}
+
+				System.out.println("    Friends:");
+				for (String friend : friends) {
+					System.out.println("        ID = " + friend + ", Name = " + people.get(friend).getName());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -286,60 +319,60 @@ public class Main {
 	}
 
 	private static void printPeopleCountry() {
-    Scanner consoleLine = new Scanner(System.in);
-    System.out.println("Which country do you want to show people from?");
-    String answer = consoleLine.nextLine();
+		Scanner consoleLine = new Scanner(System.in);
+		System.out.println("Which country do you want to show people from?");
+		String answer = consoleLine.nextLine();
 
-    if (answer.isEmpty()) {
-        System.out.println("No country entered.");
-    }
+		if (answer.isEmpty()) {
+			System.out.println("No country entered.");
+		}
 
-    try {
-        boolean found = false;
+		try {
+			boolean found = false;
 
-        for (Person p : people.values()) {
-            if (answer.equalsIgnoreCase(p.getHome())) {
-                System.out.println(p.getIdperson() + " " + p.getLastname());
-                found = true;
-            }
-        }
+			for (Person p : people.values()) {
+				if (answer.equalsIgnoreCase(p.getBirthplace())) {
+					System.out.println(p.getIdperson() + " " + p.getLastname());
+					found = true;
+				}
+			}
 
-        if (!found) {
-            System.out.println("No people found from " + answer);
-        }
+			if (!found) {
+				System.out.println("No people found from " + answer);
+			}
 
-    } catch (Exception e) {
-        System.out.println("An error has ocurred while searching for people");
-    }
-}
+		} catch (Exception e) {
+			System.out.println("An error has ocurred while searching for people");
+		}
+	}
 
 	public static List<List<Person>> groupByProfile() {
 
-    Map<String, List<Person>> groups = new HashMap<>();
+		Map<String, List<Person>> groups = new HashMap<>();
 
-    for (Person p : people.values()) {
+		for (Person p : people.values()) {
 
-        Set<String> sortedFavs = new TreeSet<>(p.getFilms());
+			Set<String> sortedFavs = new TreeSet<>(p.getFilms());
 
-        String key = String.join(",", sortedFavs);
+			String key = String.join(",", sortedFavs);
 
-        groups.computeIfAbsent(key, k -> new ArrayList<>()).add(p);
-    }
+			groups.computeIfAbsent(key, k -> new ArrayList<>()).add(p);
+		}
 
-    List<List<Person>> result = new ArrayList<>(groups.values());
+		List<List<Person>> result = new ArrayList<>(groups.values());
 
-    System.out.println("=== GROUPS OF USERS WITH SAME PROFILE ===");
-    int groupNumber = 1;
+		System.out.println("=== GROUPS OF USERS WITH SAME PROFILE ===");
+		int groupNumber = 1;
 
-    for (List<Person> group : result) {
-        System.out.println("Group " + groupNumber++ + ":");
-        for (Person p : group) {
-            System.out.println("   - " + p.getName());
-        }
-        System.out.println();
-    }
+		for (List<Person> group : result) {
+			System.out.println("Group " + groupNumber++ + ":");
+			for (Person p : group) {
+				System.out.println("   - " + p.getName());
+			}
+			System.out.println();
+		}
 
-    return result;
-}
+		return result;
+	}
 
 }
