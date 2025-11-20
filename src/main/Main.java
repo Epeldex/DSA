@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 import javax.swing.*;
 
 public class Main {
@@ -35,7 +38,8 @@ public class Main {
 						+ "5.  Print friends of a certain person \n"
 						+ "6.  Retrieve all the people that live in a certain city \n"
 						+ "7.  Print out all the people born between 2 dates \n"
-						+ "8.  People whose birthplace matches hometowns in 'residential.txt' \n" + "14. Log out");
+						+ "8.  People whose birthplace matches hometowns in 'residential.txt' \n" 
+						+ "9.  Create groups with the same favorite movies' \n"+ "14. Log out");
 				userChoice = consoleInput.nextInt();
 				switch (userChoice) {
 				case 1:
@@ -63,6 +67,9 @@ public class Main {
 				case 8:
 					printPeopleMatchingResidentialHometowns();
 					break;
+				case 9:
+					groupByProfile();
+					break;
 
 				case 14:
 					break;
@@ -72,9 +79,7 @@ public class Main {
 				}
 			}
 
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			System.out.println("Something went wrong");
 		} finally {
 			consoleInput.close();
@@ -281,35 +286,60 @@ public class Main {
 	}
 
 	private static void printPeopleCountry() {
-		Scanner consoleLine = new Scanner(System.in);
-		System.out.println("Which country do you want to show people from?");
-		String answer = consoleLine.nextLine().trim();
+    Scanner consoleLine = new Scanner(System.in);
+    System.out.println("Which country do you want to show people from?");
+    String answer = consoleLine.nextLine();
 
-		if (answer.isEmpty()) {
-			System.out.println("No country entered.");
-			consoleLine.close();
-			return;
-		}
+    if (answer.isEmpty()) {
+        System.out.println("No country entered.");
+    }
 
-		try {
-			boolean found = false;
+    try {
+        boolean found = false;
 
-			for (Person p : people.values()) {
-				if (answer.equalsIgnoreCase(p.getHome())) {
-					System.out.println(p.getIdperson() + " " + p.getLastname());
-					found = true;
-				}
-			}
+        for (Person p : people.values()) {
+            if (answer.equalsIgnoreCase(p.getHome())) {
+                System.out.println(p.getIdperson() + " " + p.getLastname());
+                found = true;
+            }
+        }
 
-			if (!found) {
-				System.out.println("No people found from " + answer);
-			}
+        if (!found) {
+            System.out.println("No people found from " + answer);
+        }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			consoleLine.close();
-		}
+    } catch (Exception e) {
+        System.out.println("An error has ocurred while searching for people");
+    }
+}
 
-	}
+	public static List<List<Person>> groupByProfile() {
+
+    Map<String, List<Person>> groups = new HashMap<>();
+
+    for (Person p : people.values()) {
+
+        Set<String> sortedFavs = new TreeSet<>(p.getFilms());
+
+        String key = String.join(",", sortedFavs);
+
+        groups.computeIfAbsent(key, k -> new ArrayList<>()).add(p);
+    }
+
+    List<List<Person>> result = new ArrayList<>(groups.values());
+
+    System.out.println("=== GROUPS OF USERS WITH SAME PROFILE ===");
+    int groupNumber = 1;
+
+    for (List<Person> group : result) {
+        System.out.println("Group " + groupNumber++ + ":");
+        for (Person p : group) {
+            System.out.println("   - " + p.getName());
+        }
+        System.out.println();
+    }
+
+    return result;
+}
+
 }
