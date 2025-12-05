@@ -24,4 +24,5 @@ Helena34,Helena,Reig,27-1-1998,female,Valencia,Sevilla,UV;US,Sevilla;Valencia,La
 Xavier81,Xavier,Prats,6-8-1993,male,Barcelona,Barcelona,UB,Barcelona;Madrid,Inception;Interstellar;Tenet,G6125120
 Nahia25,Nahia,Urrutia,9-11-1997,female,Bilbao,Donostia,UPV;Deusto,Donostia;Paris,Amelie;Arrival;Her,G6125120
 Tomas58,Tomas,Ortega,30-3-1994,male,Sevilla,Malaga,US;Granada,Malaga;Sevilla,Gladiator;TheMatrix;MadMax,G6125120
-Irati39,Irati,Larreta,25-5-1996,female,Pamplona,Pamplona,UPNA,Pamplona;Bilbao,Whiplash;Drive;InsideOut,G6125120
+Irati39,Irati1,Larreta,25-5-1996,female,Pamplona,Pamplona,UPNA,Pamplona;Bilbao,Whiplash;Drive;InsideOut,G6125120
+Irati38,Irati2,Larreta,25-5-1996,female,Pamplona,Pamplona,UPNA,Pamplona;Bilbao,Whiplash;Drive,G6125120

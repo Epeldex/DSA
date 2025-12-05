@@ -36,7 +36,7 @@ public class Main {
 				System.out.println("1.  Load 'people' into the network \n" + "2.  Load 'relationships' \n"
 						+ "3.  Print out people \n" + "4.  Print out friendships \n"
 						+ "5.  Print friends of a certain person \n"
-						+ "6.  Retrieve all the people that live in a certain country \n"
+						+ "6.  Retrieve all the people that live in a certain city \n"
 						+ "7.  Print out all the people born between 2 dates \n"
 						+ "8.  People whose birthplace matches hometowns in 'residential.txt' \n"
 						+ "9.  Create groups with the same favorite movies' \n" + "14. Log out");
@@ -59,7 +59,7 @@ public class Main {
 					printPersonsFriends();
 					break;
 				case 6:
-					printPeopleCountry();
+					printPeopleCity();
 					break;
 				case 7:
 					printPeopleBetweenDates();
@@ -149,7 +149,7 @@ public class Main {
 		for (Person p : result) {
 			String studiedAtText = "";
 			if (p.getStudiedAt() != null && !p.getStudiedAt().isEmpty()) {
-				studiedAtText = String.join(";", p.getStudiedAt());
+				studiedAtText = String.join(", ", p.getStudiedAt());
 			}
 
 			System.out.printf("%-20s %-20s %-15s %-30s\n", p.getName(), p.getLastname(), p.getBirthplace(),
@@ -285,11 +285,6 @@ public class Main {
 	}
 
 	private static void printPeople() {
-		/*
-		 * try { for (Person person : people) { System.out.println(person.toString()); }
-		 * 
-		 * } catch (Exception e) { System.out.println(e.toString()); }
-		 */
 		String createdFile = "StoredPeople.txt";
 		File fileName = new File(createdFile);
 		try {
@@ -310,17 +305,15 @@ public class Main {
 		try {
 			for (Person a : people.values()) {
 				System.out.println(a.getIdperson() + ": " + a.getFriends().toString());
-
 			}
-
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
 	}
 
-	private static void printPeopleCountry() {
+	private static void printPeopleCity() {
 		Scanner consoleLine = new Scanner(System.in);
-		System.out.println("Which country do you want to show people from?");
+		System.out.println("Which city do you want to show people from?");
 		String answer = consoleLine.nextLine();
 
 		if (answer.isEmpty()) {
@@ -366,6 +359,8 @@ public class Main {
 
 		for (List<Person> group : result) {
 			System.out.println("Group " + groupNumber++ + ":");
+			
+			System.out.println("Films in common: " + String.join(", ", group.get(0).getFilms()));
 			for (Person p : group) {
 				System.out.println("   - " + p.getName());
 			}
