@@ -11,8 +11,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -39,15 +41,18 @@ public class Main {
 						+ "6.  Retrieve all the people that live in a certain city \n"
 						+ "7.  Print out all the people born between 2 dates \n"
 						+ "8.  People whose birthplace matches hometowns in 'residential.txt' \n"
-						+ "9.  Create groups with the same favorite movies' \n" + "14. Log out");
+						+ "9.  Create groups with the same favorite movies' \n"
+						+ "10. Find shortest chain between two people (BFS) \n"
+						+ "11. Find a DFS chain between two people \n"
+						+ "12. Find friend cliques (crews) with 5 or more people \n" + "14. Log out");
+
 				userChoice = consoleInput.nextInt();
 				switch (userChoice) {
 				case 1:
 					new FileHandler().loadPeople(people);
 					break;
 				case 2:
-					List<Friend> friends = new FileHandler().loadFriendships(people);
-					loadFriendsForEachPerson(friends);
+					new FileHandler().loadFriendships(people);
 					break;
 				case 3:
 					printPeople();
@@ -70,6 +75,15 @@ public class Main {
 				case 9:
 					groupByProfile();
 					break;
+				case 10:
+					findShortestChainBetweenTwoPeople();
+					break;
+				case 11:
+					findDFSChainBetweenTwoPeople();
+					break;
+				case 12:
+					findFriendCliques();
+					break;
 
 				case 14:
 					break;
@@ -87,6 +101,213 @@ public class Main {
 			System.out.println("Goodbye :)");
 		}
 
+	}
+
+	private static void findDFSChainBetweenTwoPeople() {
+		if (people == null || people.isEmpty()) {
+			System.out.println("No people loaded. Use option 1 first.");
+			return;
+		}
+
+		boolean anyFriends = people.values().stream()
+				.anyMatch(p -> p.getFriends() != null && !p.getFriends().isEmpty());
+		if (!anyFriends) {
+			System.out.println("No friendships loaded. Use option 2 first.");
+			return;
+		}
+
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.print("Enter source person's ID: ");
+		String sourceId = scanner.nextLine().trim();
+
+		System.out.print("Enter target person's ID: ");
+		String targetId = scanner.nextLine().trim();
+
+		if (!people.containsKey(sourceId)) {
+			System.out.println("Person with ID '" + sourceId + "' does not exist.");
+			return;
+		}
+		if (!people.containsKey(targetId)) {
+			System.out.println("Person with ID '" + targetId + "' does not exist.");
+			return;
+		}
+
+		if (sourceId.equals(targetId)) {
+			Person p = people.get(sourceId);
+			System.out.println("Source and target are the same person: " + p.getName() + " (" + p.getIdperson() + ")");
+			return;
+		}
+
+		// --- DFS setup ---
+		Set<String> visited = new HashSet<>();
+		Map<String, String> prev = new HashMap<>();
+
+		boolean found = dfsPath(sourceId, targetId, visited, prev);
+
+		if (!found) {
+			System.out.println("No DFS chain found between " + sourceId + " and " + targetId + ".");
+			return;
+		}
+
+		// --- Reconstruct path from target back to source using prev ---
+		List<String> path = new ArrayList<>();
+		String current = targetId;
+		while (current != null) {
+			path.add(current);
+			if (current.equals(sourceId)) {
+				break;
+			}
+			current = prev.get(current);
+		}
+
+		if (!path.get(path.size() - 1).equals(sourceId)) {
+			System.out.println("No DFS chain found between " + sourceId + " and " + targetId + ".");
+			return;
+		}
+
+		Collections.reverse(path);
+
+		System.out.println("\nDFS chain from " + sourceId + " to " + targetId + ":");
+		System.out.println("(Length: " + (path.size() - 1) + " edges)\n");
+
+		for (int i = 0; i < path.size(); i++) {
+			String id = path.get(i);
+			Person p = people.get(id);
+			System.out.print(p.getName() + " " + p.getLastname() + " (" + id + ")");
+			if (i < path.size() - 1) {
+				System.out.print("  ->  ");
+			}
+		}
+		System.out.println("\n");
+	}
+
+	private static boolean dfsPath(String current, String target, Set<String> visited, Map<String, String> prev) {
+
+		visited.add(current);
+
+		if (current.equals(target)) {
+			return true; // found a path
+		}
+
+		Person person = people.get(current);
+		if (person == null || person.getFriends() == null) {
+			return false;
+		}
+
+		for (String neighborId : person.getFriends()) {
+			if (!visited.contains(neighborId)) {
+				prev.put(neighborId, current); // we reached neighbor from current
+
+				boolean found = dfsPath(neighborId, target, visited, prev);
+				if (found) {
+					return true; // bubble success up the recursion
+				}
+			}
+		}
+
+		return false; // no path to target from this branch
+	}
+
+	private static void findShortestChainBetweenTwoPeople() {
+		// Basic sanity checks
+		if (people == null || people.isEmpty()) {
+			System.out.println("No people loaded. Use option 1 (and 2 for friendships) first.");
+			return;
+		}
+
+		boolean anyFriends = people.values().stream()
+				.anyMatch(p -> p.getFriends() != null && !p.getFriends().isEmpty());
+		if (!anyFriends) {
+			System.out.println("No friendships loaded. Use option 2 first.");
+			return;
+		}
+
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.print("Enter source person's ID: ");
+		String sourceId = scanner.nextLine().trim();
+
+		System.out.print("Enter target person's ID: ");
+		String targetId = scanner.nextLine().trim();
+
+		if (!people.containsKey(sourceId)) {
+			System.out.println("Person with ID '" + sourceId + "' does not exist.");
+			return;
+		}
+		if (!people.containsKey(targetId)) {
+			System.out.println("Person with ID '" + targetId + "' does not exist.");
+			return;
+		}
+
+		if (sourceId.equals(targetId)) {
+			Person p = people.get(sourceId);
+			System.out.println("Source and target are the same person: " + p.getName() + " (" + p.getIdperson() + ")");
+			return;
+		}
+
+		// --- BFS setup ---
+		Queue<String> queue = new LinkedList<>();
+		Map<String, String> edgeTo = new HashMap<>(); // childId -> parentId
+		HashSet<String> visited = new HashSet<>();
+
+		queue.add(sourceId);
+		visited.add(sourceId);
+
+		boolean found = false;
+
+		// --- BFS loop ---
+		while (!queue.isEmpty() && !found) {
+			String v = queue.remove();
+			Person personV = people.get(v);
+
+			if (personV.getFriends() == null)
+				continue;
+
+			for (String w : personV.getFriends()) {
+				if (!visited.contains(w)) {
+					visited.add(w);
+					edgeTo.put(w, v);
+					queue.add(w);
+
+					if (w.equals(targetId)) {
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+
+		if (!found) {
+			System.out.println("No chain found between " + sourceId + " and " + targetId + ".");
+			return;
+		}
+
+		// --- Reconstruct path from target back to source ---
+		List<String> path = new ArrayList<>();
+		String current = targetId;
+		while (current != null) {
+			path.add(current);
+			if (current.equals(sourceId))
+				break;
+			current = edgeTo.get(current);
+		}
+
+		Collections.reverse(path);
+
+		// --- Print result ---
+		System.out.println("\nShortest chain from " + sourceId + " to " + targetId + ":");
+		System.out.println("(Degrees of separation: " + (path.size() - 1) + ")\n");
+
+		for (int i = 0; i < path.size(); i++) {
+			String id = path.get(i);
+			Person p = people.get(id);
+			System.out.print(p.getName() + " " + p.getLastname() + " (" + id + ")");
+			if (i < path.size() - 1) {
+				System.out.print("  ->  ");
+			}
+		}
+		System.out.println("\n");
 	}
 
 	private static void printPeopleMatchingResidentialHometowns() {
@@ -237,15 +458,15 @@ public class Main {
 		}
 	}
 
-	private static void loadFriendsForEachPerson(List<Friend> friends) {
-		for (Friend friend : friends) {
-			Set<String> friendsOfPerson = new HashSet<>(Arrays.asList(friend.getFriends()));
-			Person person = people.get(friend.getIdperson());
-			person.setFriends(friendsOfPerson);
-			people.put(person.getIdperson(), person);
-		}
-
-	}
+//	private static void loadFriendsForEachPerson(List<Friend> friends) {
+//		for (Friend friend : friends) {
+//			Set<String> friendsOfPerson = new HashSet<>(Arrays.asList(friend.getFriends()));
+//			Person person = people.get(friend.getIdperson());
+//			person.setFriends(friendsOfPerson);
+//			people.put(person.getIdperson(), person);
+//		}
+//
+//	}
 
 	private static void printPersonsFriends() {
 		try {
@@ -359,7 +580,7 @@ public class Main {
 
 		for (List<Person> group : result) {
 			System.out.println("Group " + groupNumber++ + ":");
-			
+
 			System.out.println("Films in common: " + String.join(", ", group.get(0).getFilms()));
 			for (Person p : group) {
 				System.out.println("   - " + p.getName());
@@ -368,6 +589,103 @@ public class Main {
 		}
 
 		return result;
+	}
+
+	private static void findFriendCliques() {
+		if (people == null || people.isEmpty()) {
+			System.out.println("No people loaded. Use option 1 first.");
+			return;
+		}
+
+		boolean anyFriends = people.values().stream()
+				.anyMatch(p -> p.getFriends() != null && !p.getFriends().isEmpty());
+		if (!anyFriends) {
+			System.out.println("No friendships loaded. Use option 2 first.");
+			return;
+		}
+
+		// Build an adjacency map: id -> set of friend ids
+		Map<String, Set<String>> adjacency = new HashMap<>();
+		for (Map.Entry<String, Person> entry : people.entrySet()) {
+			String id = entry.getKey();
+			Person p = entry.getValue();
+
+			Set<String> neighbours = (p.getFriends() == null) ? Collections.emptySet() : new HashSet<>(p.getFriends());
+			adjacency.put(id, neighbours);
+		}
+
+		// Bron–Kerbosch: R = current clique, P = candidates, X = already processed
+		Set<String> R = new HashSet<>();
+		Set<String> P = new HashSet<>(adjacency.keySet()); // all vertices
+		Set<String> X = new HashSet<>();
+
+		List<Set<String>> cliques = new ArrayList<>();
+
+		bronKerbosch(R, P, X, adjacency, cliques);
+
+		// Filter: only cliques with size >= 5
+		List<Set<String>> bigCliques = cliques.stream().filter(c -> c.size() >= 5).collect(Collectors.toList());
+
+		if (bigCliques.isEmpty()) {
+			System.out.println("No friend cliques (crews) with 5 or more people found.");
+			return;
+		}
+
+		System.out.println("\nFriend cliques (crews) with 5 or more people:");
+
+		int index = 1;
+		for (Set<String> clique : bigCliques) {
+			System.out.println("\nCrew #" + index + " (size " + clique.size() + "):");
+			for (String id : clique) {
+				Person p = people.get(id);
+				if (p != null) {
+					System.out.println(" - " + p.getName() + " " + p.getLastname() + " (" + id + ")");
+				} else {
+					System.out.println(" - (" + id + ")");
+				}
+			}
+			index++;
+		}
+
+		System.out.println();
+	}
+
+	private static void bronKerbosch(Set<String> R, Set<String> P, Set<String> X, Map<String, Set<String>> adjacency,
+			List<Set<String>> cliques) {
+
+// If no more candidates and no more excluded, R is a maximal clique
+		if (P.isEmpty() && X.isEmpty()) {
+			if (R.size() >= 2) { // we collect all maximal cliques, size filter later
+				cliques.add(new HashSet<>(R));
+			}
+			return;
+		}
+
+// Copy because we will modify P while iterating
+		Set<String> Pcopy = new HashSet<>(P);
+
+		for (String v : Pcopy) {
+			Set<String> newR = new HashSet<>(R);
+			newR.add(v);
+
+			Set<String> neighbors = adjacency.getOrDefault(v, Collections.emptySet());
+
+			Set<String> newP = new HashSet<>();
+			for (String w : P) {
+				if (neighbors.contains(w)) {
+					newP.add(w);
+				}
+			}
+			Set<String> newX = new HashSet<>();
+			for (String w : X) {
+				if (neighbors.contains(w)) {
+					newX.add(w);
+				}
+			}
+			bronKerbosch(newR, newP, newX, adjacency, cliques);
+			P.remove(v);
+			X.add(v);
+		}
 	}
 
 }
