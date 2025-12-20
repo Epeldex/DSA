@@ -194,10 +194,6 @@ public class FileHandler {
 		return fileList;
 	}
 
-	private boolean personExists(Map<String, Person> people, Person person) {
-		return people.containsValue(person);
-	}
-
 	public List<String> loadResidentialIds() {
 		List<String> ids = new ArrayList<>();
 
