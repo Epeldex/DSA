@@ -9,9 +9,9 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.SplittableRandom;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,59 +45,59 @@ public class LongestPathUnweightedGraph {
 			Map<String, String> dfsParents = new HashMap<>();
 
 			switch (option) {
-				case 1:
-					dfs(source, target, null, dfsParents);
-					reconstructPathWithMap(dfsParents, target);
-					break;
-				case 2:
-					runInParallel(threadNum, () -> {
-						long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(duration);
+			case 1:
+				dfs(source, target, null, dfsParents);
+				reconstructPathWithMap(dfsParents, target);
+				break;
+			case 2:
+				runInParallel(threadNum, () -> {
+					long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(duration);
 
-						Set<String> onPath = new HashSet<>();
-						List<String> currentPath = new ArrayList<>();
+					Set<String> onPath = new HashSet<>();
+					List<String> currentPath = new ArrayList<>();
 
-						dfsBacktracking(source, target, onPath, currentPath, deadline);
-					});
-					printPath(bestPath);
-					break;
-				case 3:
-					runInParallel(threadNum, () -> {
-						long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(duration);
+					dfsBacktracking(source, target, onPath, currentPath, deadline);
+				});
+				printPath(bestPath);
+				break;
+			case 3:
+				runInParallel(threadNum, () -> {
+					long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(duration);
 
-						Set<String> onPath = new HashSet<>();
-						List<String> currentPath = new ArrayList<>();
+					Set<String> onPath = new HashSet<>();
+					List<String> currentPath = new ArrayList<>();
 
-						dfsPruning(source, target, onPath, currentPath, deadline);
-					});
-					printPath(bestPath);
-					break;
-				case 4:
-					runInParallel(threadNum, () -> {
-						long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(duration);
+					dfsPruning(source, target, onPath, currentPath, deadline);
+				});
+				printPath(bestPath);
+				break;
+			case 4:
+				runInParallel(threadNum, () -> {
+					long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(duration);
 
-						Set<String> onPath = new HashSet<>();
-						List<String> currentPath = new ArrayList<>();
+					Set<String> onPath = new HashSet<>();
+					List<String> currentPath = new ArrayList<>();
 
-						dfsHeuristics(source, target, onPath, currentPath, deadline);
-					});
-					printPath(bestPath);
-					break;
-				case 5:
-					runInParallel(threadNum, () -> {
-						long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(duration);
-						long time = System.nanoTime();
+					dfsHeuristics(source, target, onPath, currentPath, deadline);
+				});
+				printPath(bestPath);
+				break;
+			case 5:
+				runInParallel(threadNum, () -> {
+					long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(duration);
+					long time = System.nanoTime();
 
-						while (time < deadline) {
-							time = System.nanoTime();
-							long sliceDeadline = time + slice;
-							dfsRandomWithRestarts(source, target, new HashSet<>(), new ArrayList<>(),
-									deadline, sliceDeadline, new SplittableRandom(time));
-						}
-					});
-					printPath(bestPath);
-					break;
-				default:
-					break;
+					while (time < deadline) {
+						time = System.nanoTime();
+						long sliceDeadline = time + slice;
+						dfsRandomWithRestarts(source, target, new HashSet<>(), new ArrayList<>(), deadline,
+								sliceDeadline, new Random(time));
+					}
+				});
+				printPath(bestPath);
+				break;
+			default:
+				break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -130,8 +130,7 @@ public class LongestPathUnweightedGraph {
 				+ "all of them run with parallelization in mind (oderer from least accurate to most accurate): \n");
 		while (true) {
 			try {
-				System.out.println("1. DFS (no time budget) \n"
-						+ "2. DFS with backtracking \n"
+				System.out.println("1. DFS (no time budget) \n" + "2. DFS with backtracking \n"
 						+ "3. DFS with backtracking and branch pruning\n"
 						+ "4. DFS with backtracking, branch pruning and simple heuristics\n"
 						+ "5. DFS with backtracking, branch pruning, heuristics, branch shuffling and random restarts\n");
@@ -155,8 +154,7 @@ public class LongestPathUnweightedGraph {
 			return null;
 		}
 
-		boolean anyFriends = graph.values().stream()
-				.anyMatch(p -> p != null && !p.isEmpty());
+		boolean anyFriends = graph.values().stream().anyMatch(p -> p != null && !p.isEmpty());
 		if (!anyFriends) {
 			System.out.println("No friendships loaded. Use option 2 first.");
 			return null;
@@ -240,8 +238,7 @@ public class LongestPathUnweightedGraph {
 		return false;
 	}
 
-	private void dfsBacktracking(String current, String target, Set<String> onPath,
-			List<String> currentPath,
+	private void dfsBacktracking(String current, String target, Set<String> onPath, List<String> currentPath,
 			long deadline) {
 		if (System.nanoTime() > deadline)
 			return;
@@ -267,8 +264,7 @@ public class LongestPathUnweightedGraph {
 
 	}
 
-	private void dfsPruning(String current, String target, Set<String> onPath,
-			List<String> currentPath,
+	private void dfsPruning(String current, String target, Set<String> onPath, List<String> currentPath,
 			long deadline) {
 		if (System.nanoTime() > deadline)
 			return;
@@ -334,8 +330,7 @@ public class LongestPathUnweightedGraph {
 		return false;
 	}
 
-	private void dfsHeuristics(String current, String target, Set<String> onPath,
-			List<String> currentPath,
+	private void dfsHeuristics(String current, String target, Set<String> onPath, List<String> currentPath,
 			long deadline) {
 		if (System.nanoTime() > deadline)
 			return;
@@ -349,8 +344,7 @@ public class LongestPathUnweightedGraph {
 					updateBestPath(currentPath);
 				return;
 			}
-			for (String id : orderByDegree(graph.getOrDefault(current, Collections.emptySet()), onPath,
-					new SplittableRandom())) {
+			for (String id : orderByDegree(graph.getOrDefault(current, Collections.emptySet()), onPath, null)) {
 				// PATH EXISTS
 				if (!pathExists(id, target, new HashSet<>(onPath)))
 					continue;
@@ -368,13 +362,12 @@ public class LongestPathUnweightedGraph {
 		}
 	}
 
-	private Iterable<String> orderByDegree(Set<String> nodes, Set<String> onPath, SplittableRandom rnd) {
+	private Iterable<String> orderByDegree(Set<String> nodes, Set<String> onPath, Random rnd) {
 		List<String> nodeList = new ArrayList<>();
 		for (String node : nodes) {
 			if (!onPath.contains(node))
 				nodeList.add(node);
 		}
-		Collections.shuffle(nodeList, rnd);
 		Integer[] degreeArray = new Integer[nodeList.size()];
 		for (int i = 0; i < nodeList.size(); i++) {
 			String node = nodeList.get(i);
@@ -385,6 +378,10 @@ public class LongestPathUnweightedGraph {
 			}
 			degreeArray[i] = count;
 		}
+
+		if (rnd != null)
+			Collections.shuffle(nodeList, rnd);
+
 		for (int i = 0; i < degreeArray.length; i++) {
 			for (int j = i + 1; j < degreeArray.length; j++) {
 				if (degreeArray[i] < degreeArray[j]) {
@@ -400,8 +397,8 @@ public class LongestPathUnweightedGraph {
 		return nodeList;
 	}
 
-	private void dfsRandomWithRestarts(String current, String target, Set<String> onPath,
-			List<String> currentPath, long deadline, long sliceDeadline, SplittableRandom rnd) {
+	private void dfsRandomWithRestarts(String current, String target, Set<String> onPath, List<String> currentPath,
+			long deadline, long sliceDeadline, Random rnd) {
 		long time = System.nanoTime();
 		if (time > deadline || time > sliceDeadline)
 			return;

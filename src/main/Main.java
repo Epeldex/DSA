@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
@@ -106,7 +107,7 @@ public class Main {
 
 	private static Map<String, Set<String>> createFriendshipGraph() {
 		Map<String, Set<String>> g = new HashMap<>();
-		for (var entry : people.entrySet()) {
+		for (Entry<String, Person> entry : people.entrySet()) {
 			String id = entry.getKey();
 			Set<String> friends = entry.getValue().getFriends();
 			g.put(id, (friends == null) ? new HashSet<>() : new HashSet<>(friends));
